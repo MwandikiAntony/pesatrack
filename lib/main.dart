@@ -11,10 +11,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  Hive.registerAdapter(ExpenseAdapter());
-  await Hive.openBox<Expense>('expenses');
 
+  Hive.registerAdapter(ExpenseAdapter());
   Hive.registerAdapter(BudgetAdapter());
+
+  await Hive.openBox<Expense>('expenses');
   await Hive.openBox<Budget>('budgets');
 
   runApp(const PesaTrackApp());
