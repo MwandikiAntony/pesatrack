@@ -17,7 +17,7 @@ It features a modern, intuitive UI, analytics, budget alerts, and powerful filte
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 | Home Screen | Add Expense | Edit Expense | Analytics | Dark Mode |
 |------------|-------------|-------------|-----------|-----------|
@@ -27,7 +27,7 @@ It features a modern, intuitive UI, analytics, budget alerts, and powerful filte
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Flutter & Dart** – Cross-platform mobile development.  
 - **Hive** – Lightweight local database for storing expenses.  
@@ -36,39 +36,46 @@ It features a modern, intuitive UI, analytics, budget alerts, and powerful filte
 
 ---
 
-## ⚡ Installation
+## Installation
 
 1. Clone the repository:
 
 ```bash
 git clone https://github.com/yourusername/pesatrack.git
 cd pesatrack
-Install dependencies:
-
-
+```
+2. Install dependencies:
+```
 flutter pub get
-Run the app:
+```
+3. Run the app:
 
+```
 flutter run
-📦 Deployment
+```
+4. Deployment
+```
 Android APK: build/app/outputs/flutter-apk/app-release.apk
 
 Android AAB (Play Store): build/app/outputs/bundle/release/app-release.aab
-
+```
 Follow Flutter Android Deployment Docs for signed release builds.
 
+
 ## App Customization
-Change app name in android/app/src/main/AndroidManifest.xml.
+- Change app name in android/app/src/main/AndroidManifest.xml.
+- Update app icon using flutter_launcher_icons.
 
-Update app icon using flutter_launcher_icons.
 
-
-dev_dependencies:
+## dev_dependencies:
+```
   flutter_launcher_icons: ^0.12.0
 
 flutter_icons:
   android: true
   ios: true
   image_path: "assets/icon/app_icon.png"
+
+```
 Run:
 flutter pub run flutter_launcher_icons:main
