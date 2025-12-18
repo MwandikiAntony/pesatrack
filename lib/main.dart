@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'providers/expense_provider.dart';
 import 'models/budget.dart';
 import 'providers/budget_provider.dart';
+import 'providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,12 +31,18 @@ class PesaTrackApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ExpenseProvider()),
         ChangeNotifierProvider(create: (_) => BudgetProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: MaterialApp(
-        title: 'PesaTrack',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
-        home: const MainLayout(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            themeMode: themeProvider.themeMode,
+            theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
+            darkTheme: ThemeData.dark(useMaterial3: true),
+            home: const MainLayout(),
+          );
+        },
       ),
     );
   }

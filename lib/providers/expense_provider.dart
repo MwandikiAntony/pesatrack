@@ -21,6 +21,11 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteExpense(int index) {
+    _expenseBox.deleteAt(index);
+    notifyListeners();
+  }
+
   double get totalExpenses =>
       expenses.fold(0, (sum, item) => sum + item.amount);
 }
