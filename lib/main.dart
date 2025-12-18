@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/main_layout.dart';
 
 void main() {
   runApp(const PesaTrackApp());
@@ -13,14 +14,7 @@ class PesaTrackApp extends StatelessWidget {
       title: 'PesaTrack',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'PesaTrack',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
+      home: const MainLayout(),
     );
   }
 }
