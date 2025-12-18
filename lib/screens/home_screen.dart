@@ -27,12 +27,21 @@ class HomeScreen extends StatelessWidget {
                     itemCount: expenseProvider.expenses.length,
                     itemBuilder: (context, index) {
                       final expense = expenseProvider.expenses[index];
-                      return ListTile(
-                        title: Text(expense.category),
-                        subtitle: Text(expense.note),
-                        trailing: Text(
-                          'KES ${expense.amount}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        child: ListTile(
+                          leading: const Icon(Icons.attach_money),
+                          title: Text(expense.category),
+                          subtitle: Text(
+                            '${expense.note} • ${expense.date.toLocal().toString().split(' ')[0]}',
+                          ),
+                          trailing: Text(
+                            'KES ${expense.amount.toStringAsFixed(2)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
                       );
                     },
