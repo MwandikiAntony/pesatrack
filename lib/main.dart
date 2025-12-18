@@ -4,6 +4,8 @@ import 'models/expense.dart';
 import 'screens/main_layout.dart';
 import 'package:provider/provider.dart';
 import 'providers/expense_provider.dart';
+import 'models/budget.dart';
+import 'providers/budget_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +13,9 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ExpenseAdapter());
   await Hive.openBox<Expense>('expenses');
+
+  Hive.registerAdapter(BudgetAdapter());
+  await Hive.openBox<Budget>('budgets');
 
   runApp(const PesaTrackApp());
 }
@@ -20,8 +25,11 @@ class PesaTrackApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ExpenseProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ExpenseProvider()),
+        ChangeNotifierProvider(create: (_) => BudgetProvider()),
+      ],
       child: MaterialApp(
         title: 'PesaTrack',
         debugShowCheckedModeBanner: false,

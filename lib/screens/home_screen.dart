@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pesatrack/providers/budget_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/expense_provider.dart';
 
@@ -27,11 +28,15 @@ class HomeScreen extends StatelessWidget {
                     itemCount: expenseProvider.expenses.length,
                     itemBuilder: (context, index) {
                       final expense = expenseProvider.expenses[index];
+                      final isExceeded = context
+                          .read<BudgetProvider>()
+                          .isExceeded(expense.category);
                       return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 6,
                         ),
+
                         child: ListTile(
                           leading: const Icon(Icons.attach_money),
                           title: Text(expense.category),
@@ -40,7 +45,10 @@ class HomeScreen extends StatelessWidget {
                           ),
                           trailing: Text(
                             'KES ${expense.amount.toStringAsFixed(2)}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isExceeded ? Colors.red : null,
+                            ),
                           ),
                         ),
                       );
