@@ -39,9 +39,12 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
     context.read<ExpenseProvider>().addExpense(expense);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Expense added successfully')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Expense saved'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
 
     _formKey.currentState!.reset();
     _amountController.clear();
