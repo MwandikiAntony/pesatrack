@@ -2,14 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/expense_provider.dart';
 import '../providers/budget_provider.dart';
+import '../models/expense.dart';
+import '../utils/categories.dart';
+import 'edit_expense_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? selectedCategory;
+  DateTimeRange? selectedDateRange;
 
   @override
   Widget build(BuildContext context) {
     final expenseProvider = context.watch<ExpenseProvider>();
     final budgetProvider = context.read<BudgetProvider>();
+
+    // Filtered expenses
+    final filteredExpenses = expenseProvider.expenses.where((expense) {
+      final matchesCategory =
+          selectedCategory == null || expense.category == selectedCategory;
+      final matchesDate =
+          selectedDateRange == null ||
+          (expense.date.isAfter(
+                selectedDateRange!.start.subtract(const Duration(days: 1)),
+              ) &&
+              expense.date.isBefore(
+                selectedDateRange!.end.add(const Duration(days: 1)),
+              ));
+      return matchesCategory && matchesDate;
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(title: const Text('PesaTrack'), centerTitle: true),
@@ -36,14 +62,62 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
+          // 🔹 Filters
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                // Category Filter
+                Expanded(
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    hint: const Text('Filter by Category'),
+                    value: selectedCategory,
+                    items: [
+                      const DropdownMenuItem(value: null, child: Text('All')),
+                      ...expenseCategories.map(
+                        (cat) => DropdownMenuItem(value: cat, child: Text(cat)),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() => selectedCategory = value);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Date Range Filter
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    final picked = await showDateRangePicker(
+                      context: context,
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime.now(),
+                      initialDateRange: selectedDateRange,
+                    );
+                    if (picked != null) {
+                      setState(() => selectedDateRange = picked);
+                    }
+                  },
+                  icon: const Icon(Icons.date_range),
+                  label: const Text('Date'),
+                ),
+                if (selectedDateRange != null)
+                  IconButton(
+                    onPressed: () => setState(() => selectedDateRange = null),
+                    icon: const Icon(Icons.clear),
+                  ),
+              ],
+            ),
+          ),
+
           // 🔹 Expense List / Empty State
           Expanded(
-            child: expenseProvider.expenses.isEmpty
+            child: filteredExpenses.isEmpty
                 ? const _EmptyState()
                 : ListView.builder(
-                    itemCount: expenseProvider.expenses.length,
+                    itemCount: filteredExpenses.length,
                     itemBuilder: (context, index) {
-                      final expense = expenseProvider.expenses[index];
+                      final expense = filteredExpenses[index];
                       final isExceeded = budgetProvider.isExceeded(
                         expense.category,
                       );
@@ -87,7 +161,9 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                         onDismissed: (_) {
-                          expenseProvider.deleteExpense(index);
+                          expenseProvider.deleteExpense(
+                            expenseProvider.expenses.indexOf(expense),
+                          );
                         },
                         child: Card(
                           margin: const EdgeInsets.symmetric(
@@ -95,6 +171,20 @@ class HomeScreen extends StatelessWidget {
                             vertical: 6,
                           ),
                           child: ListTile(
+                            onTap: () {
+                              // Launch Edit Expense Screen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EditExpenseScreen(
+                                    expense: expense,
+                                    index: expenseProvider.expenses.indexOf(
+                                      expense,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                             leading: const Icon(Icons.attach_money),
                             title: Text(expense.category),
                             subtitle: Text(

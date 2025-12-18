@@ -26,6 +26,11 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateExpense(int index, Expense updatedExpense) {
+    _expenseBox.putAt(index, updatedExpense);
+    notifyListeners();
+  }
+
   double get totalExpenses =>
       expenses.fold(0, (sum, item) => sum + item.amount);
 }
